@@ -1,8 +1,21 @@
 # Media Optimizer
 
-Analyze your Sonarr and Radarr libraries to identify space hogs, codec upgrade candidates, and export data for review.
+<p align="center">
+  <img src="public/logo-2d.png" alt="Media Optimizer Logo" width="200">
+</p>
 
-![Screenshot](screenshot.png)
+<p align="center">
+  Analyze your Sonarr and Radarr libraries to identify space hogs, codec upgrade candidates, and export data for review.
+</p>
+
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#quick-start">Quick Start</a> •
+  <a href="#usage">Usage</a> •
+  <a href="#faq">FAQ</a>
+</p>
+
+---
 
 ## Features
 
@@ -19,7 +32,7 @@ Analyze your Sonarr and Radarr libraries to identify space hogs, codec upgrade c
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/media-optimizer.git
+git clone https://github.com/TehRobot-Assistant/media-optimizer.git
 cd media-optimizer
 
 # Install dependencies
@@ -34,7 +47,7 @@ npm start
 ### Option 2: Docker
 
 ```bash
-docker run -d -p 3000:3000 --name media-optimizer yourusername/media-optimizer
+docker run -d -p 3000:3000 --name media-optimizer tehrobot/media-optimizer
 ```
 
 ### Option 3: Docker Compose
@@ -43,7 +56,7 @@ docker run -d -p 3000:3000 --name media-optimizer yourusername/media-optimizer
 version: '3'
 services:
   media-optimizer:
-    image: yourusername/media-optimizer
+    image: tehrobot/media-optimizer
     container_name: media-optimizer
     ports:
       - "3000:3000"
@@ -111,7 +124,7 @@ Template available in Community Applications (coming soon).
 
 Manual install:
 1. Add a new Docker container
-2. Repository: `yourusername/media-optimizer`
+2. Repository: `tehrobot/media-optimizer`
 3. Port: `3000`
 
 ## FAQ
