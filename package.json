@@ -1,0 +1,17 @@
+{
+  "name": "media-optimizer",
+  "version": "1.0.0",
+  "description": "Analyze your Sonarr and Radarr libraries to identify space hogs and upgrade candidates",
+  "type": "module",
+  "main": "server.mjs",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs"
+  },
+  "keywords": ["sonarr", "radarr", "media", "plex", "optimization", "library", "analyzer"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

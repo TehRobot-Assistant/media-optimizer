@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Optimiser</title>
+    <style>
+        :root {
+            --bg-dark: #13151d;
+            --bg-card: #262937;
+            --border: #404558;
+            --text: #f5f5f5;
+            --text-muted: #7a8299;
+            --sonarr: #5d9cec;
+            --radarr: #ffc230;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+            background: var(--bg-dark); 
+            color: var(--text); 
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 2rem;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
+            border-radius: 12px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+        
+        .cards {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2.5rem 2rem;
+            width: 300px;
+            text-decoration: none;
+            color: var(--text);
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+        
+        .card.sonarr { border-top: 4px solid var(--sonarr); }
+        .card.sonarr:hover { border-color: var(--sonarr); }
+        
+        .card.radarr { border-top: 4px solid var(--radarr); }
+        .card.radarr:hover { border-color: var(--radarr); }
+        
+        .card-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .card.radarr .card-icon {
+            background: rgba(255, 194, 48, 0.1);
+            border-radius: 12px;
+            padding: 10px;
+        }
+        
+        .card-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .card.sonarr .card-title { color: var(--sonarr); }
+        .card.radarr .card-title { color: var(--radarr); }
+        
+        .card-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .footer {
+            margin-top: 4rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        
+        .footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer a:hover {
+            color: var(--text);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="/logo-2d.png" alt="Media Optimiser" class="header-logo">
+        <h1>Media Optimiser</h1>
+        <p class="subtitle">Analyse your media library, identify space hogs and upgrade candidates</p>
+        
+        <div class="cards">
+            <a href="/sonarr/" class="card sonarr">
+                <div class="card-icon">
+                    <img src="/sonarr-logo.png" alt="Sonarr">
+                </div>
+                <div class="card-title">Sonarr</div>
+                <div class="card-desc">Analyse your TV shows. Find space wasters, identify codec upgrades, export data.</div>
+            </a>
+            
+            <a href="/radarr/" class="card radarr">
+                <div class="card-icon">
+                    <img src="/radarr-logo.png" alt="Radarr">
+                </div>
+                <div class="card-title">Radarr</div>
+                <div class="card-desc">Analyse your movies. Sort by size, quality, resolution. Export for review.</div>
+            </a>
+        </div>
+        
+        <div class="footer">
+            <p>Open source · <a href="https://github.com" target="_blank">GitHub</a></p>
+        </div>
+    </div>
+</body>
+</html>

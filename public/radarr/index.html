@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radarr Library Space Optimiser</title>
+    <style>
+        :root {
+            --primary: #ffc230;
+            --primary-hover: #f5a623;
+            --bg-body: #1e2130;
+            --bg-card: #262937;
+            --bg-header: #2d3044;
+            --bg-input: #3a3f52;
+            --border: #404558;
+            --text: #f5f5f5;
+            --text-muted: #7a8299;
+            --text-dim: #555b6e;
+            --link: #5d9cec;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+            background: var(--bg-body); 
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        /* Layout */
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+        .accent-bar {
+            width: 5px;
+            background: var(--primary);
+        }
+        .main {
+            flex: 1;
+            padding: 24px 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .logo {
+            height: 40px;
+        }
+        .header h1 {
+            font-size: 20px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Config */
+        .config-card {
+            background: var(--bg-card);
+            border-radius: 4px;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .config-card h2 {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: var(--text-muted);
+        }
+        .field {
+            margin-bottom: 12px;
+        }
+        .field label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        .field input {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg-input);
+            border: none;
+            border-radius: 4px;
+            color: var(--text);
+            font-size: 14px;
+        }
+        .field input:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: -2px;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #000;
+        }
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+        .btn-secondary {
+            background: var(--bg-input);
+            color: var(--text);
+        }
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+        
+        /* Loading */
+        .loading-card {
+            background: var(--bg-card);
+            border-radius: 4px;
+            padding: 40px;
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--bg-input);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .loading-title {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .loading-movie {
+            color: var(--primary);
+            font-size: 14px;
+            margin-bottom: 16px;
+            min-height: 21px;
+        }
+        .progress-container {
+            background: var(--bg-input);
+            border-radius: 4px;
+            height: 6px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.2s;
+            border-radius: 4px;
+        }
+        .loading-count {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 800px) {
+            .stats { grid-template-columns: repeat(2, 1fr); }
+        }
+        .stat {
+            background: var(--bg-card);
+            border-radius: 4px;
+            padding: 16px 20px;
+        }
+        .stat-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: 500;
+        }
+        
+        /* Filter Cards */
+        .filter-card {
+            background: var(--bg-card);
+            border-radius: 4px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .filter-header {
+            padding: 12px 16px;
+            background: var(--bg-header);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            user-select: none;
+        }
+        .filter-header:hover {
+            background: var(--bg-input);
+        }
+        .filter-header h3 {
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .filter-arrow {
+            font-size: 10px;
+            color: var(--text-muted);
+            transition: transform 0.2s;
+        }
+        .filter-card.collapsed .filter-arrow {
+            transform: rotate(-90deg);
+        }
+        .filter-card.collapsed .filter-body {
+            display: none;
+        }
+        .filter-body {
+            padding: 16px;
+        }
+        .filter-controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .filter-controls button {
+            padding: 4px 10px;
+            font-size: 11px;
+            background: var(--bg-input);
+            border: none;
+            border-radius: 3px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+        .filter-controls button:hover {
+            color: var(--text);
+            background: var(--border);
+        }
+        
+        /* Chips */
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .chip {
+            padding: 6px 12px;
+            background: var(--bg-input);
+            border-radius: 4px;
+            font-size: 13px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 1px solid transparent;
+        }
+        .chip:hover {
+            color: var(--text);
+            border-color: var(--border);
+        }
+        .chip.active {
+            background: var(--primary);
+            color: #000;
+        }
+        .chip-divider {
+            width: 100%;
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 12px 0 8px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--border);
+        }
+        
+        /* Range Sliders */
+        .range-group {
+            margin-bottom: 20px;
+        }
+        .range-group:last-child {
+            margin-bottom: 0;
+        }
+        .range-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .range-track {
+            position: relative;
+            height: 4px;
+            background: var(--bg-input);
+            border-radius: 2px;
+        }
+        .range-fill {
+            position: absolute;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        .range-track input {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: transparent;
+            pointer-events: none;
+            -webkit-appearance: none;
+            top: 0;
+        }
+        .range-track input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            pointer-events: auto;
+            margin-top: -5px;
+        }
+        
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .actions-spacer {
+            flex: 1;
+        }
+        .filter-status {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        
+        /* Table */
+        .table-card {
+            background: var(--bg-card);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            background: var(--bg-header);
+            cursor: pointer;
+            white-space: nowrap;
+            user-select: none;
+        }
+        th:hover { color: var(--text); }
+        th.sorted { color: var(--primary); }
+        th.text-right { text-align: right; }
+        .sort-icon { margin-left: 4px; font-size: 10px; }
+        
+        td {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+        }
+        td.text-right { text-align: right; }
+        
+        .movie-title {
+            color: var(--link);
+            font-weight: 500;
+        }
+        .movie-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-codec {
+            background: rgba(255, 194, 48, 0.15);
+            color: var(--primary);
+        }
+        .badge-res {
+            background: rgba(93, 156, 236, 0.15);
+            color: var(--link);
+        }
+        
+        /* Utils */
+        .hidden { display: none !important; }
+        .error {
+            background: rgba(240, 80, 80, 0.15);
+            border-left: 3px solid #f05050;
+            padding: 12px 16px;
+            margin-top: 16px;
+            font-size: 13px;
+            color: #f05050;
+        }
+        .no-results {
+            padding: 40px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        .version {
+            position: fixed;
+            bottom: 12px;
+            right: 16px;
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="accent-bar"></div>
+        <main class="main">
+            <header class="header">
+                <svg class="logo" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="translate(70 21)">
+                        <path d="M105.302 154.943L112.824 869.492C52.651 877.014 7.52158 846.927 7.52158 786.755L0 192.55C0 4.51106 172.996 -40.6184 278.298 34.5974L812.33 342.982C887.546 395.633 902.589 493.413 864.981 561.107C857.46 508.456 834.895 478.37 789.765 448.284L188.039 109.813C142.91 79.7268 105.302 87.2484 105.302 154.943Z" fill="#ffc230"/>
+                        <path d="M0 376.079C45.1295 391.122 90.259 383.6 127.867 361.036L744.636 0C782.244 52.651 774.723 105.302 729.593 135.388L210.604 436.251C135.388 473.859 37.6079 436.251 0 376.079Z" transform="translate(60.17249 531.0214)" fill="#ffc230"/>
+                        <path d="M0 413.687L368.557 203.083L7.52157 0L0 413.687Z" transform="translate(240.6902 282.8092)" fill="#ffc230"/>
+                    </g>
+                </svg>
+                <h1>Radarr Library Space Optimiser</h1>
+            </header>
+            
+            <!-- Config -->
+            <div id="configSection" class="config-card">
+                <h2>Configuration</h2>
+                <div class="field">
+                    <label>Radarr URL</label>
+                    <input type="text" id="radarrUrl" placeholder="http://localhost:7878">
+                </div>
+                <div class="field">
+                    <label>API Key</label>
+                    <input type="password" id="apiKey" placeholder="Your Radarr API Key">
+                </div>
+                <button class="btn btn-primary" onclick="analyseLibrary()">Analyse Library</button>
+                <div id="error" class="error hidden"></div>
+            </div>
+            
+            <!-- Loading -->
+            <div id="loadingSection" class="loading-card hidden">
+                <div class="spinner"></div>
+                <div class="loading-title">Analysing Library</div>
+                <div class="loading-movie" id="loadingMovie"></div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                </div>
+                <div class="loading-count" id="loadingCount">0 / 0</div>
+            </div>
+            
+            <!-- Results -->
+            <div id="resultsSection" class="hidden">
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-label">Total Movies</div>
+                        <div class="stat-value" id="totalMovies">0</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Total Space</div>
+                        <div class="stat-value" id="totalSpace">0 GB</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Average Size</div>
+                        <div class="stat-value" id="avgSize">0 GB</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Filtered</div>
+                        <div class="stat-value" id="filteredCount">0</div>
+                    </div>
+                </div>
+                
+                <!-- Codec Filter -->
+                <div class="filter-card collapsed" id="codecCard">
+                    <div class="filter-header" onclick="toggleCard('codecCard')">
+                        <h3>Codec</h3>
+                        <span class="filter-arrow">▼</span>
+                    </div>
+                    <div class="filter-body">
+                        <div class="filter-controls">
+                            <button onclick="selectAll('codec')">All</button>
+                            <button onclick="selectNone('codec')">None</button>
+                        </div>
+                        <div class="chips" id="codecChips"></div>
+                    </div>
+                </div>
+                
+                <!-- Resolution Filter -->
+                <div class="filter-card collapsed" id="resCard">
+                    <div class="filter-header" onclick="toggleCard('resCard')">
+                        <h3>Resolution</h3>
+                        <span class="filter-arrow">▼</span>
+                    </div>
+                    <div class="filter-body">
+                        <div class="filter-controls">
+                            <button onclick="selectAll('res')">All</button>
+                            <button onclick="selectNone('res')">None</button>
+                        </div>
+                        <div class="chips" id="resChips"></div>
+                    </div>
+                </div>
+                
+                <!-- Range Filters -->
+                <div class="filter-card collapsed" id="rangeCard">
+                    <div class="filter-header" onclick="toggleCard('rangeCard')">
+                        <h3>Range Filters</h3>
+                        <span class="filter-arrow">▼</span>
+                    </div>
+                    <div class="filter-body">
+                        <div class="range-group">
+                            <div class="range-label">
+                                <span>Size (GB)</span>
+                                <span><span id="sizeMinVal">0</span> – <span id="sizeMaxVal">100</span></span>
+                            </div>
+                            <div class="range-track">
+                                <div class="range-fill" id="sizeFill"></div>
+                                <input type="range" id="sizeMin" value="0">
+                                <input type="range" id="sizeMax" value="100">
+                            </div>
+                        </div>
+                        <div class="range-group">
+                            <div class="range-label">
+                                <span>Runtime (min)</span>
+                                <span><span id="runtimeMinVal">0</span> – <span id="runtimeMaxVal">300</span></span>
+                            </div>
+                            <div class="range-track">
+                                <div class="range-fill" id="runtimeFill"></div>
+                                <input type="range" id="runtimeMin" value="0">
+                                <input type="range" id="runtimeMax" value="300">
+                            </div>
+                        </div>
+                        <div class="range-group">
+                            <div class="range-label">
+                                <span>MB/Min</span>
+                                <span><span id="mbMinVal">0</span> – <span id="mbMaxVal">100</span></span>
+                            </div>
+                            <div class="range-track">
+                                <div class="range-fill" id="mbFill"></div>
+                                <input type="range" id="mbMin" value="0">
+                                <input type="range" id="mbMax" value="100">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actions -->
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
+                    <button class="btn btn-secondary" onclick="resetFilters()">Reset</button>
+                    <button class="btn btn-secondary" onclick="exportCSV()">Export CSV</button>
+                    <button class="btn btn-secondary" onclick="exportJSON()">Export JSON</button>
+                    <div class="actions-spacer"></div>
+                    <span class="filter-status" id="filterStatus"></span>
+                </div>
+                
+                <!-- Table -->
+                <div class="table-card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th onclick="sortBy('index')">#<span class="sort-icon"></span></th>
+                                <th onclick="sortBy('title')">Movie<span class="sort-icon"></span></th>
+                                <th onclick="sortBy('year')" class="text-right">Year<span class="sort-icon"></span></th>
+                                <th onclick="sortBy('runtime')" class="text-right">Runtime<span class="sort-icon"></span></th>
+                                <th onclick="sortBy('sizeGB')" class="text-right">Size<span class="sort-icon"></span></th>
+                                <th onclick="sortBy('mbPerMin')" class="text-right">MB/Min<span class="sort-icon"></span></th>
+                                <th onclick="sortBy('codec')">Codec<span class="sort-icon"></span></th>
+                                <th onclick="sortBy('resolution')">Resolution<span class="sort-icon"></span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                    <div id="noResults" class="no-results hidden">No movies match the current filters.</div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div class="version">v1.2.0</div>
+    
+    <script>
+        // State
+        let allMovies = [];
+        let filteredMovies = [];
+        let sort = { field: 'sizeGB', asc: false };
+        let filters = { codecs: new Set(), resolutions: new Set() };
+        let ranges = {
+            size: { min: 0, max: 100, curMin: 0, curMax: 100 },
+            runtime: { min: 0, max: 300, curMin: 0, curMax: 300 },
+            mb: { min: 0, max: 100, curMin: 0, curMax: 100 }
+        };
+        
+        const STD_RES = ['2160p', '1080p', '720p', '480p'];
+        
+        // Utils
+        const setCookie = (n, v) => document.cookie = `${n}=${encodeURIComponent(v)};path=/;max-age=31536000`;
+        const getCookie = n => { const m = document.cookie.match(new RegExp('(^|; )' + n + '=([^;]*)')); return m ? decodeURIComponent(m[2]) : ''; };
+        
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('radarrUrl').value = getCookie('radarr_url') || '';
+            document.getElementById('apiKey').value = getCookie('radarr_key') || '';
+            initRangeSliders();
+        });
+        
+        function toggleCard(id) {
+            document.getElementById(id).classList.toggle('collapsed');
+        }
+        
+        function initRangeSliders() {
+            ['size', 'runtime', 'mb'].forEach(type => {
+                const min = document.getElementById(type + 'Min');
+                const max = document.getElementById(type + 'Max');
+                min.addEventListener('input', () => updateRange(type));
+                max.addEventListener('input', () => updateRange(type));
+            });
+        }
+        
+        function updateRange(type) {
+            const minEl = document.getElementById(type + 'Min');
+            const maxEl = document.getElementById(type + 'Max');
+            let minVal = parseFloat(minEl.value);
+            let maxVal = parseFloat(maxEl.value);
+            if (minVal > maxVal) [minVal, maxVal] = [maxVal, minVal];
+            
+            ranges[type].curMin = minVal;
+            ranges[type].curMax = maxVal;
+            
+            document.getElementById(type + 'MinVal').textContent = minVal.toFixed(type === 'mb' ? 1 : 0);
+            document.getElementById(type + 'MaxVal').textContent = maxVal.toFixed(type === 'mb' ? 1 : 0);
+            
+            const pct = v => ((v - parseFloat(minEl.min)) / (parseFloat(minEl.max) - parseFloat(minEl.min))) * 100;
+            const fill = document.getElementById(type + 'Fill');
+            fill.style.left = pct(minVal) + '%';
+            fill.style.width = (pct(maxVal) - pct(minVal)) + '%';
+        }
+        
+        function getResolution(width, height) {
+            if (!width || !height) return 'Unknown';
+            if (height >= 2160 || width >= 3840) return '2160p';
+            if (height >= 1080 || width >= 1920) return '1080p';
+            if (height >= 720 || width >= 1280) return '720p';
+            if (height >= 480 || width >= 720) return '480p';
+            return `${height}p`;
+        }
+        
+        async function analyseLibrary() {
+            const url = document.getElementById('radarrUrl').value.trim().replace(/\/+$/, '');
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const errorDiv = document.getElementById('error');
+            errorDiv.classList.add('hidden');
+            
+            if (!url || !apiKey) {
+                errorDiv.textContent = 'Please enter both URL and API Key';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            setCookie('radarr_url', url);
+            setCookie('radarr_key', apiKey);
+            
+            document.getElementById('configSection').classList.add('hidden');
+            document.getElementById('loadingSection').classList.remove('hidden');
+            
+            try {
+                const res = await fetch(`${url}/api/v3/movie`, { headers: { 'X-Api-Key': apiKey } });
+                if (!res.ok) throw new Error('Failed to connect to Radarr');
+                const movies = await res.json();
+                
+                const withFiles = movies.filter(m => m.hasFile && m.sizeOnDisk > 0);
+                const total = withFiles.length;
+                allMovies = [];
+                
+                for (let i = 0; i < withFiles.length; i++) {
+                    const m = withFiles[i];
+                    const pct = ((i + 1) / total) * 100;
+                    
+                    document.getElementById('loadingMovie').textContent = m.title;
+                    document.getElementById('progressBar').style.width = pct + '%';
+                    document.getElementById('loadingCount').textContent = `${i + 1} / ${total}`;
+                    
+                    const mf = m.movieFile || {};
+                    const mi = mf.mediaInfo || {};
+                    
+                    // Get actual codec from API - minimal normalization
+                    let codec = mi.videoCodec || mi.videoFormat || 'Unknown';
+                    
+                    // Get resolution - parse from "1920x1080" string or quality
+                    let resolution = 'Unknown';
+                    if (mi.resolution && mi.resolution.includes('x')) {
+                        const [w, h] = mi.resolution.split('x').map(Number);
+                        resolution = getResolution(w, h);
+                    } else if (mf.quality?.quality?.resolution) {
+                        resolution = mf.quality.quality.resolution + 'p';
+                    }
+                    
+                    allMovies.push({
+                        title: m.title,
+                        year: m.year,
+                        runtime: m.runtime || 120,
+                        sizeGB: +(m.sizeOnDisk / 1073741824).toFixed(2),
+                        mbPerMin: +(m.sizeOnDisk / 1048576 / (m.runtime || 120)).toFixed(1),
+                        codec,
+                        resolution,
+                        bitDepth: mi.videoBitDepth || mi.videoBitdepth || 8
+                    });
+                    
+                    if (i % 50 === 0) await new Promise(r => setTimeout(r, 0));
+                }
+                
+                buildFilters();
+                showResults();
+                
+            } catch (e) {
+                document.getElementById('loadingSection').classList.add('hidden');
+                document.getElementById('configSection').classList.remove('hidden');
+                errorDiv.textContent = 'Error: ' + e.message;
+                errorDiv.classList.remove('hidden');
+            }
+        }
+        
+        function buildFilters() {
+            const codecs = new Set();
+            const resolutions = new Set();
+            let sizeMin = Infinity, sizeMax = 0;
+            let rtMin = Infinity, rtMax = 0;
+            let mbMin = Infinity, mbMax = 0;
+            
+            allMovies.forEach(m => {
+                codecs.add(m.codec);
+                resolutions.add(m.resolution);
+                sizeMin = Math.min(sizeMin, m.sizeGB);
+                sizeMax = Math.max(sizeMax, m.sizeGB);
+                rtMin = Math.min(rtMin, m.runtime);
+                rtMax = Math.max(rtMax, m.runtime);
+                mbMin = Math.min(mbMin, m.mbPerMin);
+                mbMax = Math.max(mbMax, m.mbPerMin);
+            });
+            
+            // Codec chips
+            const codecArr = Array.from(codecs).sort();
+            document.getElementById('codecChips').innerHTML = codecArr.map(c =>
+                `<span class="chip active" data-type="codec" data-value="${c}" onclick="toggleChip(this)">${c}</span>`
+            ).join('');
+            filters.codecs = new Set(codecs);
+            
+            // Resolution chips - standard first, then Other + Unknown
+            const stdRes = STD_RES.filter(r => resolutions.has(r));
+            const hasUnknown = resolutions.has('Unknown');
+            const hasOther = Array.from(resolutions).some(r => !STD_RES.includes(r) && r !== 'Unknown');
+            
+            let resHtml = stdRes.map(r =>
+                `<span class="chip active" data-type="res" data-value="${r}" onclick="toggleChip(this)">${r}</span>`
+            ).join('');
+            
+            if (hasOther) {
+                resHtml += `<span class="chip active" data-type="res" data-value="Other" onclick="toggleChip(this)">Other</span>`;
+            }
+            if (hasUnknown) {
+                resHtml += `<span class="chip active" data-type="res" data-value="Unknown" onclick="toggleChip(this)">Unknown</span>`;
+            }
+            document.getElementById('resChips').innerHTML = resHtml;
+            
+            // Store resolution groups for filtering
+            filters.resolutions = new Set([...stdRes, ...(hasOther ? ['Other'] : []), ...(hasUnknown ? ['Unknown'] : [])]);
+            
+            // Ranges
+            sizeMax = Math.ceil(sizeMax) || 100;
+            rtMax = Math.ceil(rtMax) || 300;
+            mbMax = Math.ceil(mbMax) || 100;
+            
+            ranges.size = { min: 0, max: sizeMax, curMin: 0, curMax: sizeMax };
+            ranges.runtime = { min: 0, max: rtMax, curMin: 0, curMax: rtMax };
+            ranges.mb = { min: 0, max: mbMax, curMin: 0, curMax: mbMax };
+            
+            ['size', 'runtime', 'mb'].forEach(type => {
+                const minEl = document.getElementById(type + 'Min');
+                const maxEl = document.getElementById(type + 'Max');
+                minEl.min = maxEl.min = 0;
+                minEl.max = maxEl.max = ranges[type].max;
+                minEl.value = 0;
+                maxEl.value = ranges[type].max;
+                updateRange(type);
+            });
+        }
+        
+        function toggleChip(el) {
+            el.classList.toggle('active');
+            const type = el.dataset.type;
+            const val = el.dataset.value;
+            const set = type === 'codec' ? filters.codecs : filters.resolutions;
+            el.classList.contains('active') ? set.add(val) : set.delete(val);
+            updateStatus();
+        }
+        
+        function selectAll(type) {
+            document.querySelectorAll(`.chip[data-type="${type}"]`).forEach(c => {
+                c.classList.add('active');
+                const set = type === 'codec' ? filters.codecs : filters.resolutions;
+                set.add(c.dataset.value);
+            });
+            updateStatus();
+        }
+        
+        function selectNone(type) {
+            document.querySelectorAll(`.chip[data-type="${type}"]`).forEach(c => {
+                c.classList.remove('active');
+            });
+            if (type === 'codec') filters.codecs.clear();
+            else filters.resolutions.clear();
+            updateStatus();
+        }
+        
+        function updateStatus() {
+            const count = allMovies.filter(m => matchFilters(m)).length;
+            document.getElementById('filterStatus').textContent =
+                count !== filteredMovies.length ? `${count} movies will match` : '';
+        }
+        
+        function matchFilters(m) {
+            if (!filters.codecs.has(m.codec)) return false;
+            
+            // Resolution matching - handle "Other" group
+            const isStdRes = STD_RES.includes(m.resolution);
+            const isUnknown = m.resolution === 'Unknown';
+            if (isStdRes && !filters.resolutions.has(m.resolution)) return false;
+            if (isUnknown && !filters.resolutions.has('Unknown')) return false;
+            if (!isStdRes && !isUnknown && !filters.resolutions.has('Other')) return false;
+            
+            if (m.sizeGB < ranges.size.curMin || m.sizeGB > ranges.size.curMax) return false;
+            if (m.runtime < ranges.runtime.curMin || m.runtime > ranges.runtime.curMax) return false;
+            if (m.mbPerMin < ranges.mb.curMin || m.mbPerMin > ranges.mb.curMax) return false;
+            return true;
+        }
+        
+        function applyFilters() {
+            filteredMovies = allMovies.filter(m => matchFilters(m));
+            document.getElementById('filteredCount').textContent = filteredMovies.length;
+            document.getElementById('filterStatus').textContent = `Showing ${filteredMovies.length} of ${allMovies.length}`;
+            renderTable();
+        }
+        
+        function resetFilters() {
+            document.querySelectorAll('.chip').forEach(c => c.classList.add('active'));
+            filters.codecs = new Set(allMovies.map(m => m.codec));
+            
+            // Rebuild resolution filter set with groups
+            const resolutions = new Set(allMovies.map(m => m.resolution));
+            const stdRes = STD_RES.filter(r => resolutions.has(r));
+            const hasUnknown = resolutions.has('Unknown');
+            const hasOther = Array.from(resolutions).some(r => !STD_RES.includes(r) && r !== 'Unknown');
+            filters.resolutions = new Set([...stdRes, ...(hasOther ? ['Other'] : []), ...(hasUnknown ? ['Unknown'] : [])]);
+            
+            ['size', 'runtime', 'mb'].forEach(type => {
+                document.getElementById(type + 'Min').value = 0;
+                document.getElementById(type + 'Max').value = ranges[type].max;
+                ranges[type].curMin = 0;
+                ranges[type].curMax = ranges[type].max;
+                updateRange(type);
+            });
+            
+            applyFilters();
+        }
+        
+        function showResults() {
+            document.getElementById('loadingSection').classList.add('hidden');
+            document.getElementById('resultsSection').classList.remove('hidden');
+            
+            const total = allMovies.reduce((s, m) => s + m.sizeGB, 0);
+            document.getElementById('totalMovies').textContent = allMovies.length.toLocaleString();
+            document.getElementById('totalSpace').textContent = Math.round(total).toLocaleString() + ' GB';
+            document.getElementById('avgSize').textContent = (total / allMovies.length).toFixed(1) + ' GB';
+            
+            applyFilters();
+        }
+        
+        function sortBy(field) {
+            if (sort.field === field) {
+                sort.asc = !sort.asc;
+            } else {
+                sort.field = field;
+                sort.asc = field === 'title';
+            }
+            
+            document.querySelectorAll('th').forEach(th => {
+                th.classList.remove('sorted');
+                th.querySelector('.sort-icon').textContent = '';
+            });
+            event.currentTarget.classList.add('sorted');
+            event.currentTarget.querySelector('.sort-icon').textContent = sort.asc ? ' ▲' : ' ▼';
+            
+            renderTable();
+        }
+        
+        function renderTable() {
+            const sorted = [...filteredMovies].sort((a, b) => {
+                let cmp;
+                if (sort.field === 'title' || sort.field === 'codec' || sort.field === 'resolution') {
+                    cmp = (a[sort.field] || '').localeCompare(b[sort.field] || '');
+                } else {
+                    cmp = (a[sort.field] || 0) - (b[sort.field] || 0);
+                }
+                return sort.asc ? cmp : -cmp;
+            });
+            
+            const tbody = document.getElementById('tableBody');
+            const noResults = document.getElementById('noResults');
+            
+            if (!sorted.length) {
+                tbody.innerHTML = '';
+                noResults.classList.remove('hidden');
+                return;
+            }
+            
+            noResults.classList.add('hidden');
+            tbody.innerHTML = sorted.map((m, i) => `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>
+                        <div class="movie-title">${m.title}</div>
+                        <div class="movie-meta">${m.bitDepth}-bit</div>
+                    </td>
+                    <td class="text-right">${m.year}</td>
+                    <td class="text-right">${m.runtime} min</td>
+                    <td class="text-right">${m.sizeGB} GB</td>
+                    <td class="text-right">${m.mbPerMin}</td>
+                    <td><span class="badge badge-codec">${m.codec}</span></td>
+                    <td><span class="badge badge-res">${m.resolution}</span></td>
+                </tr>
+            `).join('');
+        }
+        
+        function exportCSV() {
+            if (!filteredMovies.length) return alert('No data to export');
+            const headers = ['Title', 'Year', 'Runtime', 'Size (GB)', 'MB/Min', 'Codec', 'Resolution', 'Bit Depth'];
+            const rows = filteredMovies.map(m => [
+                `"${m.title.replace(/"/g, '""')}"`, m.year, m.runtime, m.sizeGB, m.mbPerMin, m.codec, m.resolution, m.bitDepth
+            ]);
+            download([headers, ...rows].map(r => r.join(',')).join('\n'), 'radarr-export.csv', 'text/csv');
+        }
+        
+        function exportJSON() {
+            if (!filteredMovies.length) return alert('No data to export');
+            download(JSON.stringify(filteredMovies, null, 2), 'radarr-export.json', 'application/json');
+        }
+        
+        function download(content, filename, type) {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([content], { type }));
+            a.download = filename;
+            a.click();
+        }
+    </script>
+</body>
+</html>
