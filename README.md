@@ -12,6 +12,7 @@
   <a href="#features">Features</a> •
   <a href="#quick-start">Quick Start</a> •
   <a href="#usage">Usage</a> •
+  <a href="#unraid">Unraid</a> •
   <a href="#faq">FAQ</a>
 </p>
 
@@ -47,7 +48,7 @@ npm start
 ### Option 2: Docker
 
 ```bash
-docker run -d -p 3000:3000 --name media-optimizer tehrobot/media-optimizer
+docker run -d -p 3000:3000 --name media-optimizer ghcr.io/tehrobot-assistant/media-optimizer:latest
 ```
 
 ### Option 3: Docker Compose
@@ -56,7 +57,7 @@ docker run -d -p 3000:3000 --name media-optimizer tehrobot/media-optimizer
 version: '3'
 services:
   media-optimizer:
-    image: tehrobot/media-optimizer
+    image: ghcr.io/tehrobot-assistant/media-optimizer:latest
     container_name: media-optimizer
     ports:
       - "3000:3000"
@@ -78,6 +79,38 @@ Your credentials are stored locally in browser cookies — never sent to any ext
 | Environment Variable | Default | Description |
 |---------------------|---------|-------------|
 | `PORT` | `3000` | Server port |
+| `DATE_FORMAT` | `US` | Date format: `US` (MM/DD/YYYY) or `UK` (DD/MM/YYYY) |
+
+## Unraid
+
+*Compatible with Unraid 6.10.0-rc1 and newer.*
+
+### Option A: Using Community Applications (Recommended)
+
+1. Download the [template XML](https://raw.githubusercontent.com/TehRobot-Assistant/media-optimizer/main/unraid-template/media-optimizer.xml)
+2. Save it to your flash drive at:
+   ```
+   /boot/config/plugins/community.applications/private/media-optimizer/media-optimizer.xml
+   ```
+3. In Unraid, go to **Apps** → look under **Private** category
+4. Click **Install**
+
+### Option B: Using Docker Tab
+
+1. Download the [template XML](https://raw.githubusercontent.com/TehRobot-Assistant/media-optimizer/main/unraid-template/media-optimizer.xml)
+2. Save it to your flash drive at:
+   ```
+   /boot/config/plugins/dockerMan/templates-user/media-optimizer.xml
+   ```
+3. In Unraid, go to **Docker** → **Add Container**
+4. Select the template from the dropdown
+
+### Option C: Manual Install
+
+1. Go to **Docker** → **Add Container**
+2. Set **Repository**: `ghcr.io/tehrobot-assistant/media-optimizer:latest`
+3. Add port mapping: Container `3000` → Host `3000`
+4. Click **Apply**
 
 ## API Keys
 
@@ -117,15 +150,6 @@ Structured data for programmatic use or further analysis.
 - Node.js 18+ (for self-hosted)
 - Sonarr v3+ and/or Radarr v3+
 - Network access between this tool and your *arr instances
-
-## Unraid
-
-Template available in Community Applications (coming soon).
-
-Manual install:
-1. Add a new Docker container
-2. Repository: `tehrobot/media-optimizer`
-3. Port: `3000`
 
 ## FAQ
 
