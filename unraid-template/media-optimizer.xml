@@ -12,7 +12,7 @@
   <Privileged>false</Privileged>
   <Support>https://github.com/TehRobot-Assistant/media-optimizer/issues</Support>
   <Project>https://github.com/TehRobot-Assistant/media-optimizer</Project>
-  <Overview>Analyze your Sonarr and Radarr libraries to identify space hogs, codec upgrade candidates, and export data for review. Features smart sorting by size, MB/minute, codec, resolution, and year. Export to CSV or JSON. Matching Sonarr blue and Radarr orange themes.</Overview>
+  <Overview>Analyze your Sonarr and Radarr libraries to identify space hogs and codec upgrade candidates.[br][br]Connect to your existing Sonarr/Radarr instances using their API keys. View total space usage, average file sizes, sort by MB/minute, codec, resolution, and year. Export data as CSV or JSON.[br][br]Your API keys stay in your browser - never sent to external servers.[br][br][b]Source:[/b] https://github.com/TehRobot-Assistant/media-optimizer</Overview>
   <Category>Tools: MediaServer:Other</Category>
   <WebUI>http://[IP]:[PORT:3000]</WebUI>
   <Icon>https://raw.githubusercontent.com/TehRobot-Assistant/media-optimizer/main/public/logo-2d.png</Icon>
@@ -20,6 +20,8 @@
   <PostArgs/>
   <DonateText/>
   <DonateLink/>
-  <Description>Analyze your Sonarr and Radarr libraries to identify space hogs, codec upgrade candidates, and export data for review. Features smart sorting by size, MB/minute, codec, resolution, and year. Export to CSV or JSON.</Description>
-  <Config Name="Web UI Port" Target="3000" Default="3000" Mode="tcp" Description="Web interface port" Type="Port" Display="always" Required="true" Mask="false">3000</Config>
+  <Description>Analyze your Sonarr and Radarr libraries to identify space hogs and codec upgrade candidates. Sort by size, MB/minute, codec, resolution. Export to CSV/JSON.</Description>
+  <Config Name="Web UI Port" Target="3000" Default="3000" Mode="tcp" Description="Port for the web interface" Type="Port" Display="always" Required="true" Mask="false">3000</Config>
+  <Config Name="Appdata" Target="/app/data" Default="/mnt/user/appdata/media-optimizer" Mode="rw" Description="Application data storage" Type="Path" Display="always" Required="false" Mask="false">/mnt/user/appdata/media-optimizer</Config>
+  <Config Name="Date Format" Target="DATE_FORMAT" Default="US" Mode="" Description="Date format: US (MM/DD/YYYY) or UK (DD/MM/YYYY)" Type="Variable" Display="always" Required="false" Mask="false">US</Config>
 </Container>
