@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>media-optimizer</Name>
+  <Repository>ghcr.io/tehrobot-assistant/media-optimizer:latest</Repository>
+  <Registry>https://github.com/TehRobot-Assistant/media-optimizer/pkgs/container/media-optimizer</Registry>
+  <Branch>
+    <Tag>latest</Tag>
+    <TagDescription>Latest stable release</TagDescription>
+  </Branch>
+  <Network>bridge</Network>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/TehRobot-Assistant/media-optimizer/issues</Support>
+  <Project>https://github.com/TehRobot-Assistant/media-optimizer</Project>
+  <Overview>Analyze your Sonarr and Radarr libraries to identify space hogs, codec upgrade candidates, and export data for review. Features smart sorting by size, MB/minute, codec, resolution, and year. Export to CSV or JSON. Matching Sonarr blue and Radarr orange themes.</Overview>
+  <Category>Tools: MediaServer:Other</Category>
+  <WebUI>http://[IP]:[PORT:3000]</WebUI>
+  <Icon>https://raw.githubusercontent.com/TehRobot-Assistant/media-optimizer/main/public/logo-2d.png</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <DonateText/>
+  <DonateLink/>
+  <Description>Analyze your Sonarr and Radarr libraries to identify space hogs, codec upgrade candidates, and export data for review. Features smart sorting by size, MB/minute, codec, resolution, and year. Export to CSV or JSON.</Description>
+  <Config Name="Web UI Port" Target="3000" Default="3000" Mode="tcp" Description="Web interface port" Type="Port" Display="always" Required="true" Mask="false">3000</Config>
+</Container>
