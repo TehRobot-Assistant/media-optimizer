@@ -1,7 +1,7 @@
 # Media Optimizer
 
 <p align="center">
-  <img src="public/logo-2d.png" alt="Media Optimizer Logo" width="200">
+  <img src="icon.png" alt="Media Optimizer" width="200">
 </p>
 
 <p align="center">
