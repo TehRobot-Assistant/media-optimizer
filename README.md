@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  Analyze your Sonarr and Radarr libraries to identify space hogs, codec upgrade candidates, and export data for review.
+  Analyse your Sonarr and Radarr libraries to identify space hogs, codec upgrade candidates, and export data for review.
 </p>
 
 <p align="center">
@@ -20,130 +20,103 @@
 
 ## Features
 
-- **Library Analysis** — View total space usage, average file sizes, and upgrade statistics
-- **Smart Sorting** — Sort by size, MB/minute, codec, resolution, year, and more
-- **Filter & Search** — Quickly find specific shows or movies
-- **Export Data** — Download analysis as CSV or JSON
-- **Codec Detection** — Identify files needing HEVC/AV1 upgrades
-- **Matching Themes** — Sonarr blue, Radarr orange — feels native
+- **Library analysis** — view total space usage, average file sizes, and upgrade statistics
+- **Smart sorting** — sort by size, MB/minute, codec, resolution, year, and more
+- **Filter and search** — quickly find specific shows or movies
+- **Export data** — download analysis as CSV or JSON
+- **Codec detection** — identify files needing HEVC/AV1 upgrades
+- **Matching themes** — Sonarr blue, Radarr orange — feels native
+- **Browser-only credentials** — API keys stay in your browser, never sent to external servers
 
 ## Quick Start
 
-### Option 1: Run Locally
-
-```bash
-# Clone the repo
-git clone https://github.com/TehRobot-Assistant/media-optimizer.git
-cd media-optimizer
-
-# Install dependencies
-npm install
-
-# Start the server
-npm start
-
-# Open http://localhost:3000
-```
-
-### Option 2: Docker
-
-```bash
-docker run -d -p 3000:3000 --name media-optimizer ghcr.io/tehrobot-assistant/media-optimizer:latest
-```
-
-### Option 3: Docker Compose
+### Docker Compose (Recommended)
 
 ```yaml
-version: '3'
 services:
   media-optimizer:
-    image: ghcr.io/tehrobot-assistant/media-optimizer:latest
+    image: tehrobot/media-optimizer:latest
     container_name: media-optimizer
     ports:
       - "3000:3000"
+    environment:
+      - PORT=3000
     restart: unless-stopped
+```
+
+```bash
+docker compose up -d
+# Open http://localhost:3000
+```
+
+### Docker Run
+
+```bash
+docker run -d \
+  --name media-optimizer \
+  -p 3000:3000 \
+  tehrobot/media-optimizer:latest
+```
+
+### Run Locally
+
+```bash
+git clone https://github.com/TehRobot-Assistant/media-optimizer.git
+cd media-optimizer
+npm install
+npm start
+# Open http://localhost:3000
 ```
 
 ## Usage
 
 1. Open the web interface
-2. Choose Sonarr or Radarr
-3. Enter your instance URL (e.g., `http://localhost:8989`)
-4. Enter your API key (found in Settings → General)
-5. Click "Analyze Library"
+2. Choose **Sonarr** or **Radarr**
+3. Enter your instance URL (e.g., `http://192.168.1.10:8989`)
+4. Enter your API key (found in Settings > General)
+5. Click **Analyse Library**
 
 Your credentials are stored locally in browser cookies — never sent to any external server.
 
-## Configuration
-
-| Environment Variable | Default | Description |
-|---------------------|---------|-------------|
-| `PORT` | `3000` | Server port |
-| `DATE_FORMAT` | `US` | Date format: `US` (MM/DD/YYYY) or `UK` (DD/MM/YYYY) |
-
 ## Unraid
 
-*Compatible with Unraid 6.10.0-rc1 and newer.*
+### Option A: Search Docker Hub
 
-### Option A: Using Community Applications (Recommended)
-
-1. Download the [template XML](https://raw.githubusercontent.com/TehRobot-Assistant/media-optimizer/main/unraid-template/media-optimizer.xml)
-2. Save it to your flash drive at:
-   ```
-   /boot/config/plugins/community.applications/private/media-optimizer/media-optimizer.xml
-   ```
-3. In Unraid, go to **Apps** → look under **Private** category
-4. Click **Install**
-
-### Option B: Using Docker Tab
-
-1. Download the [template XML](https://raw.githubusercontent.com/TehRobot-Assistant/media-optimizer/main/unraid-template/media-optimizer.xml)
-2. Save it to your flash drive at:
-   ```
-   /boot/config/plugins/dockerMan/templates-user/media-optimizer.xml
-   ```
-3. In Unraid, go to **Docker** → **Add Container**
-4. Select the template from the dropdown
-
-### Option C: Manual Install
-
-1. Go to **Docker** → **Add Container**
-2. Set **Repository**: `ghcr.io/tehrobot-assistant/media-optimizer:latest`
-3. Add port mapping: Container `3000` → Host `3000`
+1. Go to **Apps** tab and search **TehRobot**
+2. Find **media-optimizer** and click **Install**
+3. Set your port
 4. Click **Apply**
+
+### Option B: Docker Tab (Manual)
+
+1. Go to **Docker** > **Add Container**
+2. Repository: `tehrobot/media-optimizer:latest`
+3. Port: `3000` > `3000`
+4. Click **Apply**
+
+## Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORT` | `3000` | Server port |
 
 ## API Keys
 
-- **Sonarr**: Settings → General → API Key
-- **Radarr**: Settings → General → API Key
+- **Sonarr**: Settings > General > API Key
+- **Radarr**: Settings > General > API Key
 
 ## Sort Options
 
 ### Sonarr
-- Size (total)
-- Per Episode
-- MB/Min
-- Episode Count
-- Name (A-Z)
-- Year
-- Upgradable
+- Size (total), Per Episode, MB/Min, Episode Count, Name (A-Z), Year, Upgradable
 
 ### Radarr
-- Size (total)
-- MB/Min
-- Runtime
-- Name (A-Z)
-- Year
-- Resolution
-- Upgradable
+- Size (total), MB/Min, Runtime, Name (A-Z), Year, Resolution, Upgradable
 
 ## Export Formats
 
-### CSV
-Standard comma-separated values, opens in Excel/Sheets.
-
-### JSON
-Structured data for programmatic use or further analysis.
+- **CSV** — opens in Excel/Sheets
+- **JSON** — structured data for programmatic use
 
 ## Requirements
 
@@ -160,7 +133,11 @@ A: Yes. Keys are stored in your browser's cookies and only sent directly to your
 A: The tool fetches episode/movie file data for each item. Large libraries (1000+ shows) may take a minute.
 
 **Q: What does "Needs Upgrade" mean?**
-A: Files not using HEVC/H.265/AV1 codecs, or using less than 10-bit color depth.
+A: Files not using HEVC/H.265/AV1 codecs, or using less than 10-bit colour depth.
+
+## Docker Hub
+
+Available on Docker Hub: [tehrobot/media-optimizer](https://hub.docker.com/r/tehrobot/media-optimizer)
 
 ## Disclaimer
 
@@ -169,7 +146,3 @@ This is an **unofficial third-party tool**. It is not affiliated with, endorsed 
 ## License
 
 MIT
-
-## Contributing
-
-Pull requests welcome! Please open an issue first to discuss changes.

@@ -1,0 +1,9 @@
+services:
+  media-optimizer:
+    image: tehrobot/media-optimizer:latest
+    container_name: media-optimizer
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+    restart: unless-stopped
