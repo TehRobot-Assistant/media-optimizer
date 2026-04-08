@@ -10,7 +10,23 @@
   <Support>https://github.com/TehRobot-Assistant/media-optimizer/issues</Support>
   <Project>https://github.com/TehRobot-Assistant/media-optimizer</Project>
   <ReadMe/>
-  <Overview>Analyse your Sonarr and Radarr libraries to find space wasters, codec upgrade candidates, and optimisation opportunities.[br][br]Features:[br]- Connect to Sonarr and Radarr using their API keys[br]- View total library size, average file sizes, and quality breakdown[br]- Sort by size, MB/minute, codec, resolution, and year[br]- Identify large files with inefficient codecs (h264 vs HEVC)[br]- Export data as CSV or JSON for further analysis[br]- API keys stay in your browser — never sent to external servers[br][br]Enter your Sonarr/Radarr URL and API key directly in the web UI to get started.</Overview>
+  <Overview>Analyse your Sonarr and Radarr libraries to find&#13;
+space wasters, codec upgrade candidates, and&#13;
+optimisation opportunities.&#13;
+&#13;
+Features:&#13;
+- Connect to Sonarr and Radarr using their API keys&#13;
+- View total library size, average file sizes,&#13;
+  and quality breakdown&#13;
+- Sort by size, MB/minute, codec, resolution, and year&#13;
+- Identify large files with inefficient codecs&#13;
+  (h264 vs HEVC)&#13;
+- Export data as CSV or JSON for further analysis&#13;
+- API keys stay in your browser — never sent to&#13;
+  external servers&#13;
+&#13;
+Enter your Sonarr/Radarr URL and API key directly&#13;
+in the web UI to get started.</Overview>
   <Category>Media Applications</Category>
   <WebUI>http://[IP]:[PORT:3000]/</WebUI>
   <TemplateURL/>
