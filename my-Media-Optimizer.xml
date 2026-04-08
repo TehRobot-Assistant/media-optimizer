@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>Media-Optimizer</Name>
+  <Repository>ghcr.io/tehrobot-assistant/media-optimizer:latest</Repository>
+  <Registry>https://github.com/TehRobot-Assistant/media-optimizer</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/TehRobot-Assistant/media-optimizer/issues</Support>
+  <Project>https://github.com/TehRobot-Assistant/media-optimizer</Project>
+  <ReadMe/>
+  <Overview>Analyse your Sonarr and Radarr libraries to find space wasters, codec upgrade candidates, and optimisation opportunities.[br][br]Features:[br]- Connect to Sonarr and Radarr using their API keys[br]- View total library size, average file sizes, and quality breakdown[br]- Sort by size, MB/minute, codec, resolution, and year[br]- Identify large files with inefficient codecs (h264 vs HEVC)[br]- Export data as CSV or JSON for further analysis[br]- API keys stay in your browser — never sent to external servers[br][br]Enter your Sonarr/Radarr URL and API key directly in the web UI to get started.</Overview>
+  <Category>Media Applications</Category>
+  <WebUI>http://[IP]:[PORT:3000]/</WebUI>
+  <TemplateURL/>
+  <Icon>https://raw.githubusercontent.com/TehRobot-Assistant/media-optimizer/main/public/logo-2d.png</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <CPUset/>
+  <DonateText>If you like my work, please consider a donation!</DonateText>
+  <DonateLink>https://buy.stripe.com/fZe6p67wT53E6NGaEE</DonateLink>
+  <Requires/>
+  <Config Name="Port" Target="3000" Default="3000" Mode="tcp" Description="" Type="Port" Display="always" Required="true" Mask="false">3000</Config>
+  <Config Name="Config Dir" Target="/app/data" Default="/mnt/user/appdata/media-optimizer" Mode="rw" Description="" Type="Path" Display="always" Required="false" Mask="false">/mnt/user/appdata/media-optimizer</Config>
+  <TailscaleStateDir/>
+</Container>
