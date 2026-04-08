@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <Container version="2">
   <Name>Media-Optimizer</Name>
-  <Repository>ghcr.io/tehrobot-assistant/media-optimizer:latest</Repository>
-  <Registry>https://github.com/TehRobot-Assistant/media-optimizer</Registry>
+  <Repository>tehrobot/media-optimizer:latest</Repository>
+  <Registry>https://hub.docker.com/r/tehrobot/media-optimizer</Registry>
   <Network>bridge</Network>
   <MyIP/>
   <Shell>sh</Shell>
